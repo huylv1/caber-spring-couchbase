@@ -1,0 +1,82 @@
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?xel-method prefix="f" name="formatStock" class="com.itsol.zkoss.ui.format.FormatElNumber"
+   signature="java.lang.String formatStock(double)"?>
+<zk>
+	<style src="/resources/css/style.css" />
+    <window id="zkspringListPerson" title="Persons List"
+        height="90%" border="normal" apply="org.zkoss.bind.BindComposer"
+        viewModel="@id('vm') @init('com.itsol.zkoss.ui.model.ListPersonModel')">
+        
+        <hlayout id="ctlhlayout">            
+            <button id="rmAllBtn" width="115px" label="Delete All"
+                disabled="@load(empty vm.persons)" onClick="@command('deleteAllPerson')" />
+        </hlayout>
+        
+        Persons : <label value="@load(vm.size)" />
+        
+        <separator />
+        <hlayout spacing="0" height="350px">
+	        <listbox id="" mold="paging" pageSize="11" pagingPosition="top"
+	            selectedItem="@bind(vm.selectedItem)"
+	            model="@load(vm.persons)"
+	             vflex="true" hflex="1">
+	            <listhead sizable="true">
+	                <listheader label="index" width="40px" align="center" />
+	                <listheader label="Name" sortDirection="ascending" sort="auto(firstName)" align="center" />
+	                <listheader label="Gender" align="center" width="60px"/>
+	                <listheader label="Birthday" align="center" width="90px"/>
+	                <listheader label="Price" align="center" width="100px"/>
+	                <listheader label="Rate" align="center" width="60px"/>
+	                <listheader label="" align="center" width="160px"/>
+	            </listhead>
+	            <template name="model">
+	                <listitem>
+	                    <listcell label="${forEachStatus.index + 1}" />
+	                    <listcell label="@load(each.fullName)" />
+	                    <listcell label="@load(each.gender)" />
+	                    <listcell label="@load(each.birthday)@converter('formatedDate',format='dd/MM/yyyy')" />
+	                    <listcell label="@load(each.price)@converter('formatedNumber',format='#,##0')" />
+	                    <listcell label="@load(each.rate)" />
+	                    <listcell >
+	                    	<button label="Delete" onClick="@command('removePerson', person=each)" />
+	                    </listcell>
+	                </listitem>
+	            </template>
+	        </listbox>
+	        
+	        <window sclass="card-pre" title="Image" hflex="1" vflex="true" border="normal">
+	            <div sclass="card">
+	                <image sclass="logo" src="@load(vm.selectedItem.imageUrl)" />
+	                <div sclass="number">
+	                    Mobile Phone: <label value="@load(vm.selectedItem.id)" />
+	                </div>
+	            </div>
+	        </window>
+        </hlayout>
+        <grid>
+	        <auxhead>
+	            <auxheader colspan="7" class="topic">Edit Data</auxheader>
+	        </auxhead>
+	        <columns>
+	            <column label="First Name" align="center" />
+	            <column label="Last Name" align="center" />
+	            <column label="Gender" align="center" />
+	            <column label="Birthday" align="center" />
+	            <column label="Price" align="center" />
+	            <column label="Rate" align="center" />
+	            <column label="" align="center" />
+	        </columns>
+	        <rows>
+	            <row>
+	                <textbox value="@bind(vm.selectedItem.firstName)" />
+	                <textbox value="@bind(vm.selectedItem.lastName)" />
+	                <combobox selectedItem="@bind(vm.selectedItem.gender)" model="@load(vm.gender)" />
+	                <datebox value="@bind(vm.selectedItem.birthday)" constraint="no empty, no today, no future" readonly="true"/>
+	                <doublebox value="@bind(vm.selectedItem.price)" constraint="no negative,no empty" format="#,##0" />
+	                <spinner value="@bind(vm.selectedItem.rate)" constraint="min 0 max 5" readonly="true" />
+	                <button label="Save" onClick="@command('editPerson', person=vm.selectedItem)" />
+	            </row>
+	        </rows>
+	    </grid>
+    </window>
+</zk>

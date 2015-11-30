@@ -1,0 +1,43 @@
+<zk>
+	<style src="/resources/css/style.css" />
+    <window id="zkspringListFee" title="Fee List"
+        width="500px" border="normal" apply="org.zkoss.bind.BindComposer"
+        viewModel="@id('vm') @init('com.itsol.zkoss.ui.model.ListFeeModel')">
+        
+        <hlayout spacing="0" height="350px">
+	        <listbox id=""
+	            selectedItem="@bind(vm.selectedItem)"
+	            model="@load(vm.fees)"
+	             vflex="true" hflex="1">
+	            <listhead sizable="true">
+	                <listheader label="Monthly" align="center" width="90px"/>
+	                <listheader label="Per transaction" align="center" width="100px"/>
+	                <listheader label="" align="center" width="160px"/>
+	            </listhead>
+	            <template name="model">
+	                <listitem>
+	                    <listcell label="@load(each.monthly)@converter('formatedNumber',format='#,##0')" />
+	                    <listcell label="@load(each.feePerTransaction)@converter('formatedNumber',format='#,##0')" />
+	                </listitem>
+	            </template>
+	        </listbox>
+        </hlayout>
+        <grid>
+	        <auxhead>
+	            <auxheader colspan="3" class="topic">Edit Fee</auxheader>
+	        </auxhead>
+	        <columns>
+	            <column label="Monthly" align="center" />
+	            <column label="Per transaction" align="center" />
+	            <column label="" align="center" />
+	        </columns>
+	        <rows>
+	            <row>
+	                <doublebox value="@bind(vm.selectedItem.monthly)" constraint="no negative,no empty" format="#,##0" />
+	                <doublebox value="@bind(vm.selectedItem.feePerTransaction)" constraint="no negative,no empty" format="#,##0" />
+	                <button label="Save" onClick="@command('editFee', fee=vm.selectedItem)" disabled="@load(empty vm.selectedItem)" />
+	            </row>
+	        </rows>
+	    </grid>
+    </window>
+</zk>
